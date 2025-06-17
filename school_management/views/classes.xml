@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="classes_form_view" model="ir.ui.view">
+        <field name="name">classes.form.view</field>
+        <field name="model">school.classes</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>
+                    <group>
+                        <group>
+                            <field name="name"/>
+                            <field name="code"/>
+                        </group>
+                        <group>
+                            <field name="subject_ids" widget="many2many_tags"/>
+                            <field name="years"/>
+                        </group>
+
+                    </group>
+                    
+                    <notebook>
+                        <page string="Students">
+                            <field name="student_ids" mode="list" readonly="1">
+                                <list>
+                                    <field name="name"/>
+                                    <field name="age"/>
+                                    <field name="nrc"/>
+                                    <field name="email"/>
+                                    <field name="phone"/>
+                                </list>
+                            </field>
+    
+                        </page>
+                        <page string="Teachers">
+                            <field name="teacher_ids" mode="list" readonly="1">
+                                <list>
+                                    <field name="name"/>
+                                    <field name="age"/>
+                                    <field name="nrc"/>
+                                    <field name="email"/>
+                                    <field name="phone"/>
+                                </list>
+                            </field>
+                        </page>
+                    </notebook>
+                    
+                    <div>
+                        <field name="description" placeholder="Description about Class"/>
+                    </div>
+                </sheet>
+                <!-- <div class="o_attachment_preview" /> -->
+                    <!-- Chatter -->
+                <chatter reload_on_attachment="True"/>
+            </form>
+        </field>
+    </record>
+    <record id="classes_list_view" model="ir.ui.view">
+        <field name="name">classes.list.view</field>
+        <field name="model">school.classes</field>
+        <field name="arch" type="xml">
+            <list>
+                <field name="name"/>
+                <field name="code"/>
+                <field name="years"/>
+                <field name="subject_ids" />
+            </list>
+        </field>
+    </record>
+
+    <record id="classes_view_action" model="ir.actions.act_window">
+        <field name="name">Class</field>
+        <field name="res_model">school.classes</field>
+        <field name="view_mode">list,form</field>
+    </record>
+
+    <menuitem
+        id="classes_root_menu"
+        name="Class"
+        action="classes_view_action"
+        sequence="3"/>
+
+    <menuitem id="classes_ment" name="Class" action="classes_view_action"
+    parent="classes_root_menu" sequence="1"/>
+    
+
+</odoo>

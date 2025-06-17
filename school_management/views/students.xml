@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+  <record id="students_form_view" model="ir.ui.view">
+    <field name="name">students.form.view</field>
+    <field name="model">school.students</field>
+    <field name="arch" type="xml">
+      <form>
+        <header>
+          <field name="sale_order_id" invisible="1"/>
+          <button name="create_sale_order" type="object" class="oe_highlight" string="Generate Sale Order" invisible="sale_order_id != False"/>
+          <field name="state" widget="statusbar" statusbar_visible="draft,confirm,done"/>
+        </header>
+        <sheet>
+          <div class="oe_button_box" name="button_box">
+            <button name="action_view_related_order" type="object" class="oe_stat_button" icon="oi-search">
+              Student Order
+            </button>
+          </div>
+          <group>
+            <field name="name"/>
+            <field name="age"/> 
+            <field name="dob"/>
+            <field name="father_name"/>
+            <field name="mother_name"/>
+          </group>
+          <group>
+            <field name="nrc"/>
+            <field name="email"/>
+            <field name="phone"/>
+            <field name="major_id"/>
+            <field name="class_id"/>
+
+          </group>
+          <field name="address"/>
+        </sheet>
+        <chatter reload_on_attachment="True"/>
+      </form>
+    </field>
+  </record>
+
+  <record id="students_tree_view" model="ir.ui.view">
+    <field name="name">students.tree.view</field>
+    <field name="model">school.students</field>
+    <field name="arch" type="xml">
+      <list>
+        <field name="stu_id"/>
+        <field name="name"/>
+        <field name="age"/>
+        <field name="nrc"/>
+        <field name="email"/>
+        <field name="phone"/>
+        <field name="major_id"/>
+        <field name="class_id"/>
+        <field name="state"/>
+      </list>
+    </field>
+  </record>
+
+  <record id="students_action" model="ir.actions.act_window">
+    <field name="name">Students</field>
+    <field name="res_model">school.students</field>
+    <field name="view_mode">list,form</field>
+  </record>
+
+  <menuitem
+    id="school_students_menu"
+    name="Students"
+    action="students_action"
+    sequence="2"/>
+  
+
+</odoo>

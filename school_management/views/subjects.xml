@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="subjects_form_view" model="ir.ui.view">
+        <field name="name">subjects.form.view</field>
+        <field name="model">school.subjects</field>
+        <field name="arch" type="xml">
+            <form>
+                <div>
+                    <group>
+                        <field name="name"/>
+                        <field name="code"/>
+                    </group>
+                    <group>
+                        <field name="sub_type"/>
+                        
+                    </group>
+                    <div>
+                        <field name="description" placeholder="Description about Subjects"/>
+                    </div>
+                </div>
+                <chatter reload_on_attachment="True"/>
+            </form>
+        </field>
+    </record>
+    <record id="subjects_tree_view" model="ir.ui.view">
+        <field name="name">subjects.tree.view</field>
+        <field name="model">school.subjects</field>
+        <field name="arch" type="xml">
+            <list>
+                <field name="name"/>
+                <field name="code"/>
+                <field name="sub_type"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="subjects_view_action" model="ir.actions.act_window">
+        <field name="name">Subject</field>
+        <field name="res_model">school.subjects</field>
+        <field name="view_mode">list,form</field>
+    </record>
+
+    <menuitem
+        id="school_subjects_menu"
+        name="Subjects"
+        parent="school_management.classes_root_menu"
+        action="subjects_view_action"
+        sequence="2"/>
+
+</odoo>

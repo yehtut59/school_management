@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    
+    <record id="majors_form_view" model="ir.ui.view">
+        <field name="name">majors.form.view</field>
+        <field name="model">school.majors</field>
+        <field name="arch" type="xml">
+            <form>
+                <header>
+                    <field name="product_id" invisible="1"/>
+                    <button name="create_product" type="object" class="oe_highlight" string="Confirm" invisible="product_id != False"/>
+                    <field name="state" widget="statusbar" statusbar_visible="draft,confirm"/>
+                </header>
+                <sheet>
+                    <group>
+                        <group>
+                            <field name="name"/>
+                            <field name="code"/>
+                            <field name="total_years"/>
+                        </group>
+                        <group>
+                            <field name="price_unit"/>
+                            <field name="currency_id"/>
+                        </group>
+                        
+                    </group>
+                    <group>
+                        <field name="description" placeholder="Description about Major"/>
+                    </group>
+                </sheet>
+                <chatter reload_on_attachment="True"/>
+            </form>
+        </field>
+    </record>
+
+    <record id="majors_tree_view" model="ir.ui.view">
+        <field name="name">majors.tree.view</field>
+        <field name="model">school.majors</field>
+        <field name="arch" type="xml">
+            <list>
+                <field name="name"/>
+                <field name="code"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="majors_action" model="ir.actions.act_window">
+        <field name="name">Majors</field>
+        <field name="res_model">school.majors</field>
+        <field name="view_mode">list,form</field>
+    </record>   
+
+    <menuitem
+        id="school_majors_menu"
+        name="Majors"
+        parent="school_management.classes_root_menu"
+        action="majors_action"
+        sequence="3"/>
+
+</odoo>

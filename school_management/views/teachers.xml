@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+  <record id="teacher_form_view" model="ir.ui.view">
+    <field name="name">teachers.form.view</field>
+    <field name="model">school.teachers</field>
+    <field name="arch" type="xml">
+      <form>
+        <div>
+          <group>
+            <field name="name"/>
+            <field name="age"/> 
+            <field name="dob"/>
+          </group>
+          <group>
+            <field name="nrc"/>
+            <field name="email"/>
+            <field name="phone"/>
+            <field name="subject_ids" widget="many2many_tags"/>
+            <field name="class_ids" widget="many2many_tags"/>
+
+          </group>
+          <field name="address"/>
+        </div>
+        <chatter reload_on_attachment="True"/>
+      </form>
+    </field>
+  </record>
+
+  <record id="teachers_tree_view" model="ir.ui.view">
+    <field name="name">teachers.tree.view</field>
+    <field name="model">school.teachers</field>
+    <field name="arch" type="xml">
+      <list>
+        <field name="name"/>
+        <field name="age"/>
+        <field name="nrc"/>
+        <field name="email"/>
+        <field name="phone"/>
+      </list>
+    </field>
+  </record>
+
+  <record id="teachers_action" model="ir.actions.act_window">
+    <field name="name">Teachers</field>
+    <field name="res_model">school.teachers</field>
+    <field name="view_mode">list,form</field>
+  </record>
+
+  <menuitem
+    id="school_teachers_menu"
+    name="Teachers"
+    action="teachers_action"
+    sequence="3"/>
+  
+
+</odoo>
