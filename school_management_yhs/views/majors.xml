@@ -54,7 +54,7 @@
     <menuitem
         id="school_majors_menu"
         name="Majors"
-        parent="school_management.classes_root_menu"
+        parent="classes_root_menu"
         action="majors_action"
         sequence="3"/>
 

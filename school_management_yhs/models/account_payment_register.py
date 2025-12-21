@@ -19,5 +19,6 @@ class AccountPaymentRegister(models.TransientModel):
     def action_create_payments(self):
         res = super(AccountPaymentRegister,self).action_create_payments()
         self.student_id.state = 'done'
+        self.student_id.is_paid = True
         self.student_id.generate_stu_code()
         return res

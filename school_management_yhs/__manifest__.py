@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 {
-    'name': "school_management",
+    'name': "School Management(YHS)",
 
     'summary': "Short (1 phrase/line) summary of the module's purpose",
 
@@ -18,7 +18,7 @@ Long description of module's purpose
     'version': '0.1',
 
     # any module necessary for this one to work correctly
-    'depends': ['base','portal','digest','sale_management','account','stock'],
+    'depends': ['base','portal','digest','sale_management','account','stock','web'],
 
     # always loaded
     'data': [
@@ -29,7 +29,8 @@ Long description of module's purpose
         'views/classes.xml',
         'views/subjects.xml',
         'views/majors.xml',
-        'views/sale_order.xml'
+        'views/sale_order.xml',
+        'reports/class_report.xml',
     ],
     # only loaded in demonstration mode
     'demo': [

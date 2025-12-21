@@ -44,7 +44,7 @@
     <menuitem
         id="school_subjects_menu"
         name="Subjects"
-        parent="school_management.classes_root_menu"
+        parent="classes_root_menu"
         action="subjects_view_action"
         sequence="2"/>
 

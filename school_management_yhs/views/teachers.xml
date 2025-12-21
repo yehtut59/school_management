@@ -9,8 +9,8 @@
         <div>
           <group>
             <field name="name"/>
-            <field name="age"/> 
             <field name="dob"/>
+            <field name="age" force_save="1" readonly="true"/> 
           </group>
           <group>
             <field name="nrc"/>
@@ -20,7 +20,7 @@
             <field name="class_ids" widget="many2many_tags"/>
 
           </group>
-          <field name="address"/>
+          <field name="address" placeholder="Teacher Address ....."/>
         </div>
         <chatter reload_on_attachment="True"/>
       </form>

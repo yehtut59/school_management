@@ -11,3 +11,4 @@ class Subjects(models.Model):
     code = fields.Char(string="Code", required=True)
     description = fields.Text(string="Description")
     sub_type = fields.Selection([('major', 'Major'), ('minor', 'Minor')], string='Subject Type', required=True,default='major')
+    company_id = fields.Many2one('res.company', string='Company', required=True, default=lambda self: self.env.company)

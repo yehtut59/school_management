@@ -9,6 +9,12 @@
         <header>
           <field name="sale_order_id" invisible="1"/>
           <button name="create_sale_order" type="object" class="oe_highlight" string="Generate Sale Order" invisible="sale_order_id != False"/>
+
+          <button name="editable_student" type="object" string="Edit Student" class="btn-primary" 
+            invisible="(state != 'done' and state != 'confirm')"/>
+          <button name="confirm_edit" type="object" string="Confirm Edit" class="btn-success" 
+            invisible="state != 'edit'"/>
+
           <field name="state" widget="statusbar" statusbar_visible="draft,confirm,done"/>
         </header>
         <sheet>
@@ -18,21 +24,21 @@
             </button>
           </div>
           <group>
-            <field name="name"/>
-            <field name="age"/> 
-            <field name="dob"/>
-            <field name="father_name"/>
-            <field name="mother_name"/>
+            <field name="name" readonly="state in ('done','confirm')"/>
+            <field name="age" readonly="1" force_save="1"/> 
+            <field name="dob" readonly="state in ('done','confirm')"/>
+            <field name="father_name" readonly="state in ('done','confirm')"/>
+            <field name="mother_name" readonly="state in ('done','confirm')"/>
           </group>
           <group>
-            <field name="nrc"/>
-            <field name="email"/>
-            <field name="phone"/>
-            <field name="major_id"/>
-            <field name="class_id"/>
+            <field name="nrc" readonly="state in ('done','confirm')"/>
+            <field name="email" readonly="state in ('done','confirm')"/>
+            <field name="phone" readonly="state in ('done','confirm')"/>
+            <field name="major_id" readonly="state in ('done','confirm')"/>
+            <field name="class_id" readonly="state in ('done','confirm')" domain="[('major_id','=',major_id)]"/>
 
           </group>
-          <field name="address"/>
+          <field name="address" placeholder="Student Address ....." readonly="state in ('done','confirm')"/>
         </sheet>
         <chatter reload_on_attachment="True"/>
       </form>

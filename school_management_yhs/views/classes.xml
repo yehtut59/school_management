@@ -6,6 +6,21 @@
         <field name="model">school.classes</field>
         <field name="arch" type="xml">
             <form>
+                <header>
+                    <button
+                        name="generate_child_classes"
+                        type="object"
+                        string="Generate Child Classes"
+                        class="btn-primary"
+                        invisible="(parent_id or is_active)"
+                    />
+
+                    <button name="active_class" type="object" string="Activate Class" class="btn-success" 
+                        invisible="(is_active)"/>
+                    <button name="deactivate_class" type="object" string="Deactivate Class" class="btn-warning" 
+                        invisible="(not is_active)" />
+                    
+                </header>
                 <sheet>
                     <group>
                         <group>
@@ -13,16 +28,19 @@
                             <field name="code"/>
                         </group>
                         <group>
+                            <field name="major_id"/>
                             <field name="subject_ids" widget="many2many_tags"/>
                             <field name="years"/>
+                            <field name="is_active" widget="boolean_toggle" readonly="1"/>
                         </group>
 
                     </group>
                     
                     <notebook>
                         <page string="Students">
-                            <field name="student_ids" mode="list" readonly="1">
+                            <field name="student_ids" mode="list"  readonly="1">
                                 <list>
+                                    <field name="stu_id"/>
                                     <field name="name"/>
                                     <field name="age"/>
                                     <field name="nrc"/>
@@ -41,6 +59,7 @@
                                     <field name="email"/>
                                     <field name="phone"/>
                                 </list>
+                                
                             </field>
                         </page>
                     </notebook>

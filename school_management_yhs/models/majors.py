@@ -8,6 +8,7 @@ class Majors(models.Model):
 
     name = fields.Char(string='Majors Name',required=True)
     code = fields.Char(string='Code', required=True)
+    company_id = fields.Many2one('res.company', string='Company', required=True, default=lambda self: self.env.company)
     price_unit = fields.Float(string='Price/Year', required=True)
     currency_id = fields.Many2one('res.currency', string='Currency', required=True, default=lambda self: self.env.company.currency_id)
     description = fields.Text(string='Description')
