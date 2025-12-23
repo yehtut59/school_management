@@ -24,6 +24,15 @@ class Classes(models.Model):
     parent_id = fields.Many2one('school.classes', string='Parent Class')
     is_parent = fields.Boolean(string='Is Parent Class', compute='_compute_is_parent', store=True)
     is_active = fields.Boolean(string='Is Active', default=False)
+    start_date = fields.Date(string='Start Date')
+    has_child_class  = fields.Boolean(string='Has Child Class', compute='_compute_has_child_class', store=True)
+    
+    
+    @api.depends('is_parent')
+    def _compute_has_child_class(self):
+        for rec in self:
+            if rec.is_parent:
+                rec.has_child_class = bool(self.env['school.classes'].search([('parent_id','=',rec.id)]))
     # main_attachment_ids = fields.Many2many('ir.attachment', string="Main Attachments", store=True)
     
     
@@ -34,11 +43,31 @@ class Classes(models.Model):
     #         vals['code'] = vals['major_id'].code +"-"+ str(seq)
     #     return super(Classes, self).create(vals)
     
-    
+    def transfer_students_tonext_year(self):
+        for rec in self:
+            if not rec.parent_id:
+                child_class = self.env['school.classes'].search(['|',('parent_id', '=', rec.id),('id','=',rec.id)],order='id desc')
+                child_class_count = len(child_class)
+                next_class = None
+                for child in child_class:
+                    if child_class_count == len(child_class) and next_class == None:
+                        for student in child.student_ids:
+                            student.state = 'end'
+                            student.class_id = None
+                            
+                        next_class = child
+                    else:
+                        for student in child.student_ids:
+                            student.class_id = next_class.id
+                        next_class = child
+                    child_class_count -= 1
+                        
+            
     
     def active_class(self):
         for rec in self:
             rec.is_active = True
+            rec.start_date = fields.Date.today()
             if not rec.code:
                 rec.generate_class_code()
             
@@ -56,12 +85,13 @@ class Classes(models.Model):
     @api.depends('parent_id')
     def _compute_is_parent(self):
         for record in self:
-            record.is_parent = bool(record.parent_id)
+            record.is_parent = bool(not record.parent_id)
             
             
     def generate_child_classes(self):
         for res in self:
             if (not res.is_parent) and res.years == 'first':
+                res.start_date = fields.Date.today()
                 total_year = res.major_id.total_years
                 years_mapping = {
                     1: 'second',

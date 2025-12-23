@@ -18,10 +18,10 @@ class Students(models.Model):
     mother_name = fields.Char(string="Mother Name", required=True)
     phone = fields.Char(string="Phone", required=True)
     major_id = fields.Many2one('school.majors', string='Major', required=True)  # Many2one relationship with majors
-    class_id = fields.Many2one('school.classes', string='Class', required=True)  # Many2one relationship with classes
+    class_id = fields.Many2one('school.classes', string='Class')  # Many2one relationship with classes
     subject_ids = fields.Many2many('school.subjects', string='Subjects')  # Many2many relationship with subjects
     sale_order_id = fields.Many2one('sale.order', string='Sale Order', readonly=True)
-    state = fields.Selection([('draft', 'Draft'), ('confirm', 'Confirmed'), ('done', 'Paid'),('edit', 'Edit')], default='draft', string='Status',tracking=True)
+    state = fields.Selection([('draft', 'Draft'), ('confirm', 'Confirmed'), ('done', 'Paid'),('edit', 'Edit'),('end','End')], default='draft', string='Status',tracking=True)
     is_paid = fields.Boolean(string='Is Paid', default=False)
     company_id = fields.Many2one('res.company', string='Company', required=True, default=lambda self: self.env.company)
     

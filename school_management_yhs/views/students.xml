@@ -35,7 +35,7 @@
             <field name="email" readonly="state in ('done','confirm')"/>
             <field name="phone" readonly="state in ('done','confirm')"/>
             <field name="major_id" readonly="state in ('done','confirm')"/>
-            <field name="class_id" readonly="state in ('done','confirm')" domain="[('major_id','=',major_id)]"/>
+            <field name="class_id" readonly="state in ('done','confirm')" domain="[('major_id','=',major_id)]" required="state != 'end'"/>
 
           </group>
           <field name="address" placeholder="Student Address ....." readonly="state in ('done','confirm')"/>
