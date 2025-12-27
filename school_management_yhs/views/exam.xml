@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+        <record id="school_exam_form_view" model="ir.ui.view">
+            <field name="name">school.exam.form.view</field>
+            <field name="model">school.exam</field>
+            <field name="arch" type="xml">
+                <form>
+                    <header>
+                        <field
+                            name="state"
+                            widget="statusbar"
+                            statusbar_visible="draft,confirm,in_progress,done"
+                        />
+                    </header>
+                    <sheet>
+                        <group>
+                            <group>
+                                <field name="name"/>
+                                <field name="code"/>
+                                <field name="start_date"/>
+                                <field name="end_date"/>
+                            </group>
+                            <group>
+                                <field name="major_id"/>
+                                <field name="subject_ids" widget="many2many_tags"/>
+                                <field name="class_ids" widget="many2many_tags"/>
+                            </group>
+                        </group>
+                        <notebook>
+                            <page name="student_info" string="Student Information">
+                                <field name="student_exam_ids" mode="list">
+                                    <list editable="bottom">
+                                        <field name="student_id"/>
+                                        <field name="stu_id"/>
+                                        <field name="total_marks"/>
+                                        <field name="rating"/>
+                                        <!-- <field name="grade"/> -->
+                                        <button name="view_detail_stu_exam" icon='fa-list' type="object" class="btn-primary"/>
+                                    </list>
+                                </field>
+                            </page>
+
+                            <page name="time_table" string="Exam Timetable">
+                                <field name="exam_timetable_ids" mode="list">
+                                    <list editable="bottom">
+                                        <field name="subject_id"/>
+                                        <field name="exam_date"/>
+                                        <field name="start_time"/>
+                                        <field name="end_time"/>
+                                        <field name="total_marks"/>
+                                        <field name="class_id"/>
+                                        <field name="class_code"/>
+                                    </list>
+                                </field>
+
+                            </page>
+                        </notebook>
+                    </sheet>
+                </form>
+            </field>
+                            
+        </record>
+
+
+        <record id="school_exam_tree_view" model="ir.ui.view">
+            <field name="name">school.exam.tree.view</field>
+            <field name="model">school.exam</field>
+            <field name="arch" type="xml">
+                <list>
+                    <field name="name"/>
+                    <field name="code"/>
+                    <field name="major_id"/>
+                    <field name="start_date"/>
+                    <field name="end_date"/>
+                </list>
+            </field>
+
+        </record>
+
+        <record id="school_exam_action" model="ir.actions.act_window">
+            <field name="name">Exam</field>
+            <field name="res_model">school.exam</field>
+            <field name="view_mode">list,form</field>
+        </record>
+
+
+        <menuitem id="exam_menu" name="Exam" action="school_exam_action" parent="classes_root_menu" sequence="2"/>
+
+    
+
+</odoo>

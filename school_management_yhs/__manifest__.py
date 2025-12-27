@@ -30,6 +30,8 @@ Long description of module's purpose
         'views/subjects.xml',
         'views/majors.xml',
         'views/sale_order.xml',
+        'views/exam.xml',
+        'wizard/stu_exam_detail_wizard.xml',
         'reports/class_report.xml',
     ],
     # only loaded in demonstration mode

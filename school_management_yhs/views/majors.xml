@@ -56,6 +56,6 @@
         name="Majors"
         parent="classes_root_menu"
         action="majors_action"
-        sequence="3"/>
+        sequence="4"/>
 
 </odoo>

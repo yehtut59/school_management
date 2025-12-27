@@ -46,6 +46,6 @@
         name="Subjects"
         parent="classes_root_menu"
         action="subjects_view_action"
-        sequence="2"/>
+        sequence="3"/>
 
 </odoo>
