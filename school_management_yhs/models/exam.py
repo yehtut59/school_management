@@ -1,13 +1,13 @@
 from odoo import fields, models, api
-
+from odoo.exceptions import UserError
 
 class SchoolExam(models.Model):
     
     _name = "school.exam"
     _description = "School Exam"
     
-    name = fields.Char(name="Exam Name", required=True)
-    code = fields.Char(name="Exam Code", readonly=True)
+    name = fields.Char(name="Exam Name", required=True, help="Mid/Final Exam etc.")
+    code = fields.Char(name="Exam Code", readonly=True,compute="_compute_code", store=True)
     start_date = fields.Date(name="Start Date", required=True)
     end_date = fields.Date(name="End Date", required=True)
     major_id = fields.Many2one('school.majors', string='Major', required=True)
@@ -15,7 +15,26 @@ class SchoolExam(models.Model):
     student_exam_ids = fields.One2many('school.student.exam', 'exam_id', string='Students')
     exam_timetable_ids = fields.One2many('school.exam.timetable', 'exam_id', string='Exam Timetable')
     class_ids = fields.Many2many('school.classes', string='Classes', required=True)
-    state = fields.Selection([('draft','Draft'),('confirm','Confirm'),('in_progress','In Progress'),('done','Done')],string="Status",default='draft')
+    state = fields.Selection([('draft','Draft'),('confirm','Confirm'),('in_progress','In Progress'),('done','Done'),('result','Result')],string="Status",default='draft')
+    total_marks = fields.Float(string="Total Marks", compute="_compute_total_marks", store=True)
+    
+    
+    @api.depends('exam_timetable_ids.total_marks')
+    def _compute_total_marks(self):
+        for rec in self:
+            rec.total_marks = sum(rec.exam_timetable_ids.mapped('total_marks'))
+            
+            
+    @api.depends('name','major_id')
+    def _compute_code(self):
+        for rec in self:
+            if rec.name and rec.major_id:
+                seq = self.env['ir.sequence'].next_by_code('school.exam') or '/'
+                rec.code = f"{rec.major_id.code}-{rec.name[:3].upper()}:{seq}"
+            else:
+                rec.code = ''
+    
+    
     @api.onchange('class_ids')
     def _onchange_class_ids(self):
         for rec in self:
@@ -33,18 +52,59 @@ class SchoolExam(models.Model):
                 
                         # })
                 rec.student_exam_ids = children_vals
+                
+    def action_confirm(self):
+        self.ensure_one()
+        subject_ids = self.subject_ids.ids
+        check_sub_timetable = self.env['school.exam.timetable'].search_count([('exam_id','=',self.id),('subject_id','in',subject_ids)])
+        if check_sub_timetable < len(subject_ids):
+            raise UserError("Please set exam timetable for all subjects before confirming the exam.")
+        else:
+            self.state = 'confirm'
+            
+    def action_start_exam(self):
+        self.ensure_one()
+        self.state = 'in_progress'
+        
+    def action_end_exam(self):
+        self.ensure_one()
+        self.state = 'done'
+        
+    def action_publish_result(self):
+        self.ensure_one()
+        for stu in self.student_exam_ids:
+            result_count = self.env['student.exam.detail'].search_count([('student_exam_id','=',stu.id)])
+            if result_count < len(self.subject_ids) or result_count > len(self.subject_ids):
+                raise UserError(f"Please enter all exam details for student {stu.student_id.name} before publishing results.")
+            else:
+                stu.total_marks = sum([detail.marks_obtained for detail in stu.stu_exam_detail_ids])
+                stu.rating = (sum([detail.marks_obtained for detail in stu.stu_exam_detail_ids]) / self.total_marks) * 10 if self.total_marks > 0 else 0.0
+        
+        self.state = 'result'
+        
     
 class SchoolStudentExam(models.Model):
     
     _name = "school.student.exam"
     _description = "School Student Exam"
     
-    exam_id = fields.Many2one('school.exam', string='Exam', required=True)
+    name = fields.Char(string='Roll No.',readonly=True)
+    exam_id = fields.Many2one('school.exam', string='Exam',ondelete='cascade',)
     stu_exam_detail_ids = fields.One2many('student.exam.detail', 'student_exam_id', string='Exam Details')
     student_id = fields.Many2one('school.students', string='Student', required=True)
     stu_id = fields.Char(related='student_id.stu_id', string='Student ID', store=True)
     total_marks = fields.Float(string='Total Marks', required=True,default=0.0)
     rating = fields.Float(string='Rating', required=True,default=0.0)
+    status = fields.Selection(related='exam_id.state',string="Exam Status")
+
+    @api.model
+    def create(self, values):
+        result = super(SchoolStudentExam,self).create(values)
+        count = self.env['school.student.exam'].search_count([('exam_id', '=', result.exam_id.id)])
+        result['name'] =result.exam_id.code +  str(count)
+        
+        return result
+    
     # grade = fields.Char(string='Grade', compute='_compute_grade', store=True)
     
     
@@ -84,11 +144,12 @@ class SchoolExamTimeTable(models.Model):
     _name = "school.exam.timetable"
     _description = "School Exam Timetable"
     
-    exam_id = fields.Many2one('school.exam', string='Exam', required=True)
+    exam_id = fields.Many2one('school.exam', string='Exam',ondelete='cascade',)
+    domain_subject_ids = fields.Many2many(related='exam_id.subject_ids', string='Subjects')
     subject_id = fields.Many2one('school.subjects', string='Subject', required=True)
     exam_date = fields.Date(string='Exam Date', required=True)
-    start_time = fields.Float(string='Start Time', required=True)
-    end_time = fields.Float(string='End Time', required=True)
+    start_time = fields.Datetime(string='Start Time', required=True)
+    end_time = fields.Datetime(string='End Time', required=True)
     total_marks = fields.Float(string='Total Marks', required=True)
     class_id = fields.Many2one('school.classes', string='Class', required=True)
     class_code = fields.Char(related='class_id.code', string='Class Code', store=True)

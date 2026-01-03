@@ -9,41 +9,48 @@
                         <field
                             name="state"
                             widget="statusbar"
-                            statusbar_visible="draft,confirm,in_progress,done"
+                            statusbar_visible="draft,confirm,in_progress,done,result"
                         />
+                        <button name="action_confirm" string="Confirm" type="object" class="oe_highlight" invisible="state!='draft'"/>
+                        <button name="action_start_exam" string="Start Exam" type="object" class="oe_highlight" invisible="state!='confirm'"/>
+                        <button name="action_end_exam" string="End Exam" type="object"  class="oe_highlight" invisible="state!='in_progress'"/>
+                        <button name="action_publish_result" string="Publish Result" type="object" class="oe_highlight" invisible="state!='done'"/>
                     </header>
                     <sheet>
                         <group>
                             <group>
-                                <field name="name"/>
+                                <field name="name" placeholder="Mid/Final Exam etc." readonly="state!='draft'"/>
                                 <field name="code"/>
-                                <field name="start_date"/>
-                                <field name="end_date"/>
+                                <field name="start_date" readonly="state!='draft'"/>
+                                <field name="end_date" readonly="state!='draft'"/>
+                                
                             </group>
                             <group>
-                                <field name="major_id"/>
-                                <field name="subject_ids" widget="many2many_tags"/>
-                                <field name="class_ids" widget="many2many_tags"/>
+                                <field name="major_id" readonly="state!='draft'"/>
+                                <field name="subject_ids" widget="many2many_tags" readonly="state!='draft'"/>
+                                <field name="class_ids" widget="many2many_tags" readonly="state!='draft'"/>
                             </group>
                         </group>
                         <notebook>
                             <page name="student_info" string="Student Information">
-                                <field name="student_exam_ids" mode="list">
-                                    <list editable="bottom">
-                                        <field name="student_id"/>
-                                        <field name="stu_id"/>
-                                        <field name="total_marks"/>
-                                        <field name="rating"/>
+                                <field name="student_exam_ids"  mode="list" readonly="1">
+                                    <list>
+                                        <field name="student_id" readonly="1"/>
+                                        <field name="name" readonly="1"/>
+                                        <field name="stu_id" readonly="1"/>
+                                        <field name="total_marks" readonly="1"/>
+                                        <field name="rating" readonly="1"/>
                                         <!-- <field name="grade"/> -->
-                                        <button name="view_detail_stu_exam" icon='fa-list' type="object" class="btn-primary"/>
+                                        <button name="view_detail_stu_exam" icon='fa-list' type="object" readonly="0" invisible="parent.state not in ['done','result']"/>
                                     </list>
                                 </field>
                             </page>
 
                             <page name="time_table" string="Exam Timetable">
-                                <field name="exam_timetable_ids" mode="list">
+                                <field name="exam_timetable_ids" mode="list" readonly="state!='draft'">
                                     <list editable="bottom">
-                                        <field name="subject_id"/>
+                                        <field name="domain_subject_ids" column_invisible="1"/>
+                                        <field name="subject_id" domain="[('id','in',domain_subject_ids)]"/>
                                         <field name="exam_date"/>
                                         <field name="start_time"/>
                                         <field name="end_time"/>
@@ -83,8 +90,14 @@
             <field name="view_mode">list,form</field>
         </record>
 
+        <menuitem
+            id="exam_main_menu"
+            name="Exam Management"
+            parent="classes_root_menu"
+            sequence="2"/>
 
-        <menuitem id="exam_menu" name="Exam" action="school_exam_action" parent="classes_root_menu" sequence="2"/>
+
+        <menuitem id="exam_menu" name="Exam" action="school_exam_action" parent="exam_main_menu" sequence="1"/>
 
     
 

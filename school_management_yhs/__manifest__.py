@@ -31,6 +31,7 @@ Long description of module's purpose
         'views/majors.xml',
         'views/sale_order.xml',
         'views/exam.xml',
+        'views/stu_exam_detail.xml',
         'wizard/stu_exam_detail_wizard.xml',
         'reports/class_report.xml',
     ],

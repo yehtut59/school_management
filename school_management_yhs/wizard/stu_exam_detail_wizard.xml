@@ -5,13 +5,14 @@
         <field name="name">stu.exam.detail.wizard</field>
         <field name="model">school.student.exam</field>
         <field name="arch" type="xml">
-            <form>
+            <form class="modal-xl">
                 <div string="Student Exam Details">
-                    <field name="stu_exam_detail_ids" mode="list">
-                        <list readonly="1">
+                    
+                    <field name="stu_exam_detail_ids" mode="list" readonly="parent.state!='done'">
+                        <list editable="bottom">
                             <field name="student_id"/>
                             <field name="exam_id"/>
-                            <field name="subject_id"/>
+                            <field name="subject_id" domain="[('id','in',exam_id.subject_ids)]"/>
                             <field name="marks_obtained"/>
                             <field name="grade"/>
                             <field name="is_passed"/>

@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    
+    <record id="student_exam_detail_tree" model="ir.ui.view">
+        <field name="name">student.exam.detail.tree</field>
+        <field name="model">student.exam.detail</field>
+        <field name="arch" type="xml">
+            <list editable="top">
+                <field name="status" column_invisible="1"/>
+                <field name="student_exam_id" domain="[('status','=','done')]" readonly="status != 'done'"/>
+                <field name="student_id" readonly="status != 'done'"/>
+                <field name="exam_id" readonly="status != 'done'"/>
+                <field name="domain_subject_ids" column_invisible="1"/>
+                <field name="subject_id" domain="[('id','in',domain_subject_ids)]" readonly="status != 'done'"/>
+                <field name="marks_obtained" readonly="status != 'done'"/>
+                <field name="grade" readonly="status != 'done'"/>
+                <field name="is_passed" readonly="status != 'done'"/>
+                <field name="status" string="Exam Status" optional="show" readonly="status != 'done'"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="student_exam_detail_action" model="ir.actions.act_window">
+        <field name="name">Student's Exam Records</field>
+        <field name="res_model">student.exam.detail</field>
+        <field name="view_mode">list</field>
+    </record>
+
+    <menuitem id="stu_exam_record_menu" name="Exam Records" action="student_exam_detail_action" parent="exam_main_menu" sequence="2"/>
+
+</odoo>
