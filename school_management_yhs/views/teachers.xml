@@ -6,22 +6,38 @@
     <field name="model">school.teachers</field>
     <field name="arch" type="xml">
       <form>
-        <div>
-          <group>
-            <field name="name"/>
-            <field name="dob"/>
-            <field name="age" force_save="1" readonly="true"/> 
-          </group>
-          <group>
-            <field name="nrc"/>
-            <field name="email"/>
-            <field name="phone"/>
-            <field name="subject_ids" widget="many2many_tags"/>
-            <field name="class_ids" widget="many2many_tags"/>
+        <header>
 
+          <button name="action_confirm" type="object" string="Confirm" class="btn-success" 
+            invisible="state not in ('draft', 'edit')"/>
+
+          <button name="action_edit" type="object" string="Edit" class="btn-primary" 
+            invisible="state != 'confirm'"/>
+          
+          <button name="view_related_employee" type="object" class="oe_stat_button" icon="oi-search">
+            Related Employee
+          </button>
+          
+          <field name="state" widget="statusbar" statusbar_visible="draft,edit,confirm"/>
+        </header>
+        <sheet>
+          <group>
+            <group>
+              <field name="name" readonly="state == 'confirm'"/>
+              <field name="dob" readonly="state == 'confirm'"/>
+              <field name="age" force_save="1" readonly="true"/> 
+            </group>
+            <group>
+              <field name="nrc" readonly="state == 'confirm'"/>
+              <field name="email" readonly="state == 'confirm'"/>
+              <field name="phone" readonly="state == 'confirm'"/>
+              <field name="subject_ids" widget="many2many_tags" readonly="state == 'confirm'"/>
+              <field name="class_ids" widget="many2many_tags" readonly="state == 'confirm'"/>
+            </group>
+            
           </group>
-          <field name="address" placeholder="Teacher Address ....."/>
-        </div>
+          <field name="address" placeholder="Teacher Address ....." readonly="state == 'confirm'"/>
+        </sheet>
         <chatter reload_on_attachment="True"/>
       </form>
     </field>

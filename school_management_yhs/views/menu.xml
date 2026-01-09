@@ -21,8 +21,11 @@
         action="teachers_action"
         sequence="2"/>
 
-    <!-- ///////////////////////////////////////// -->
+    <menuitem id="student_attendance_menu" name="Student Attendance" 
+    parent="academic_root_menu" sequence="3"/>
 
+    <menuitem id="mark_student_attendance_menu" name="Mark Attendance" 
+    parent="student_attendance_menu" sequence="1" action="student_attendance_action"/>
     <!-- Academic Setup Menu -->
     <menuitem
         id="academic_setup_root_menu"

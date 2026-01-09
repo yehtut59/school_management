@@ -18,7 +18,7 @@ Long description of module's purpose
     'version': '0.1',
 
     # any module necessary for this one to work correctly
-    'depends': ['base','portal','digest','sale_management','account','stock','web'],
+    'depends': ['base','portal','digest','sale_management','account','stock','web','hr','hr_attendance','hr_contract'],
 
     # always loaded
     'data': [
@@ -32,6 +32,7 @@ Long description of module's purpose
         'views/sale_order.xml',
         'views/exam.xml',
         'views/stu_exam_detail.xml',
+        'views/stu_attendance.xml',
         'wizard/stu_exam_detail_wizard.xml',
         'reports/class_report.xml',
         'views/menu.xml'

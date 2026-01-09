@@ -7,7 +7,9 @@ from . import classes
 from . import majors
 from . import exam
 from . import stu_exam_detail
+from . import school_student_attendance
 from . import sale_order
 from . import product
 from . import account_move
 from . import account_payment_register
+from . import hr_employee
