@@ -18,27 +18,47 @@
           <field name="state" widget="statusbar" statusbar_visible="draft,confirm,done"/>
         </header>
         <sheet>
+
+        
           <div class="oe_button_box" name="button_box">
             <button name="action_view_related_order" type="object" class="oe_stat_button" icon="oi-search">
               Student Order
             </button>
           </div>
           <group>
-            <field name="name" readonly="state in ('done','confirm')"/>
-            <field name="age" readonly="1" force_save="1"/> 
-            <field name="dob" readonly="state in ('done','confirm')"/>
-            <field name="father_name" readonly="state in ('done','confirm')"/>
-            <field name="mother_name" readonly="state in ('done','confirm')"/>
+            <group>
+              
+              <field name="name" readonly="state in ('done','confirm','end')"/>
+              <field name="stu_id" readonly="1"/>
+              <field name="age" readonly="1" force_save="1"/> 
+              <field name="dob" readonly="state in ('done','confirm','end')"/>
+              <field name="father_name" readonly="state in ('done','confirm','end')"/>
+              <field name="mother_name" readonly="state in ('done','confirm','end')"/>
+            </group>
+            <group>
+              <field name="nrc" readonly="state in ('done','confirm','end')"/>
+              <field name="email" readonly="state in ('done','confirm','end')"/>
+              <field name="phone" readonly="state in ('done','confirm','end')"/>
+              <field name="major_id" readonly="state in ('done','confirm','end')"/>
+              <field name="class_id" readonly="state in ('done','confirm','end')" domain="[('major_id','=',major_id)]" required="state != 'end'"/>
+            </group>
           </group>
-          <group>
-            <field name="nrc" readonly="state in ('done','confirm')"/>
-            <field name="email" readonly="state in ('done','confirm')"/>
-            <field name="phone" readonly="state in ('done','confirm')"/>
-            <field name="major_id" readonly="state in ('done','confirm')"/>
-            <field name="class_id" readonly="state in ('done','confirm')" domain="[('major_id','=',major_id)]" required="state != 'end'"/>
-
-          </group>
-          <field name="address" placeholder="Student Address ....." readonly="state in ('done','confirm')"/>
+          <field name="address" placeholder="Student Address ....." readonly="state in ('done','confirm','end')"/>
+          <notebook>
+            <page name="exam_info" string="Exam Information">
+                <field name="student_exam_ids"  mode="list" readonly="1">
+                    <list>
+                        <field name="exam_id"/>
+                        <field name="student_id"/>
+                        <field name="name"/>
+                        <field name="stu_id"/>
+                        <field name="total_marks"/>
+                        <field name="rating"/>
+                        <field name="status" string="Exam Status"/>
+                    </list>
+                </field>
+            </page>
+          </notebook>
         </sheet>
         <chatter reload_on_attachment="True"/>
       </form>
@@ -69,11 +89,7 @@
     <field name="view_mode">list,form</field>
   </record>
 
-  <menuitem
-    id="school_students_menu"
-    name="Students"
-    action="students_action"
-    sequence="2"/>
+  
   
 
 </odoo>

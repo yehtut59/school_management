@@ -41,11 +41,6 @@
         <field name="view_mode">list,form</field>
     </record>
 
-    <menuitem
-        id="school_subjects_menu"
-        name="Subjects"
-        parent="classes_root_menu"
-        action="subjects_view_action"
-        sequence="3"/>
+   
 
 </odoo>

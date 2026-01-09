@@ -15,7 +15,7 @@ class StudentExamDetail(models.Model):
     remarks = fields.Text(string="Remarks")
     status  = fields.Selection(related="exam_id.state",string="Exam Status",default="done")
     grade = fields.Char(string="Grade",compute="_compute_grade",store=True)
-    is_passed = fields.Boolean(string="Is Passed",default=False)
+    is_passed = fields.Boolean(string="Is Passed",default=False,readonly=True)
     
     @api.depends('marks_obtained')
     def _compute_grade(self):

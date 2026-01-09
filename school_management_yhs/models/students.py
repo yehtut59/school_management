@@ -24,7 +24,7 @@ class Students(models.Model):
     state = fields.Selection([('draft', 'Draft'), ('confirm', 'Confirmed'), ('done', 'Paid'),('edit', 'Edit'),('end','End')], default='draft', string='Status',tracking=True)
     is_paid = fields.Boolean(string='Is Paid', default=False)
     company_id = fields.Many2one('res.company', string='Company', required=True, default=lambda self: self.env.company)
-    
+    student_exam_ids = fields.One2many('school.student.exam', 'student_id', string='Student Exams',ondelete='cascade')
     
     @api.onchange('major_id')
     def _onchange_major_id(self):

@@ -11,14 +11,48 @@ class SchoolExam(models.Model):
     start_date = fields.Date(name="Start Date", required=True)
     end_date = fields.Date(name="End Date", required=True)
     major_id = fields.Many2one('school.majors', string='Major', required=True)
-    subject_ids = fields.Many2many('school.subjects', string='Subjects', required=True)
-    student_exam_ids = fields.One2many('school.student.exam', 'exam_id', string='Students')
-    exam_timetable_ids = fields.One2many('school.exam.timetable', 'exam_id', string='Exam Timetable')
-    class_ids = fields.Many2many('school.classes', string='Classes', required=True)
+    years = fields.Selection(
+        [('first', 'First Year'), ('second', 'Second Year'), ('third', 'Third Year'),('fourth', 'Fourth Year')],
+        string='Year',
+        required=True,
+        default='first'
+    )
+    # domain_subject_ids = fields.Many2many('school.subjects', string='Subjects',compute='_compute_domain_subjects',store=True)
+    subject_ids = fields.Many2many('school.subjects', string='Subjects', required=True,store=True,compute="_compute_subjects")
+    student_exam_ids = fields.One2many('school.student.exam', 'exam_id', string='Students',ondelete='cascade',store=True)
+    exam_timetable_ids = fields.One2many('school.exam.timetable', 'exam_id', string='Exam Timetable',ondelete='cascade')
+    class_ids = fields.Many2many('school.classes', string='Classes', required=True,domain="[('is_active','=',True)]")
     state = fields.Selection([('draft','Draft'),('confirm','Confirm'),('in_progress','In Progress'),('done','Done'),('result','Result')],string="Status",default='draft')
     total_marks = fields.Float(string="Total Marks", compute="_compute_total_marks", store=True)
     
+    # @api.depends('major_id')
+    # def _compute_domain_subjects(self):
+    #     for rec in self:
+    #         if rec.major_id:
+    #             rec.domain_subject_ids = self.env['school.subjects'].search([('major_id','=',rec.major_id.id)]).ids
+    #         else:
+    #             rec.domain_subject_ids = [(5, 0, 0)]
     
+    def generate_exam_students(self):
+        for rec in self:
+            children_vals = []
+            rec.student_exam_ids = [(5, 0, 0)]
+            for cls in rec.class_ids:
+                for stu in cls.student_ids:
+                    children_vals.append((0, 0, {
+                        'student_id': stu.id,
+                    }))
+            rec.student_exam_ids = children_vals
+    
+    
+    @api.depends('major_id','years')
+    def _compute_subjects(self):
+        for rec in self:
+            if rec.major_id and rec.years:
+                rec.subject_ids = self.env['school.majors.curriculum'].search([('major_id','=',rec.major_id.id),('years','=',rec.years)]).mapped('subject_ids').ids
+            else:
+                rec.subject_ids = [(5, 0, 0)]
+
     @api.depends('exam_timetable_ids.total_marks')
     def _compute_total_marks(self):
         for rec in self:
@@ -35,23 +69,23 @@ class SchoolExam(models.Model):
                 rec.code = ''
     
     
-    @api.onchange('class_ids')
-    def _onchange_class_ids(self):
-        for rec in self:
-            if rec.class_ids and rec.state == 'draft':
-                children_vals = []
-                rec.student_exam_ids = [(5, 0, 0)]
-                for cls in rec.class_ids:
-                    for stu in cls.student_ids:
-                        children_vals.append((0, 0, {
-                            'student_id': stu.id,
-                        }))
-                        # student_exams = self.env['school.student.exam'].create({
-                        #     'exam_id': rec.id,
+    # @api.onchange('class_ids')
+    # def _prepare_student_exam_lines(self):
+    #     for rec in self:
+    #         if rec.class_ids and rec.state == 'draft':
+    #             children_vals = []
+    #             rec.student_exam_ids = [(5, 0, 0)]
+    #             for cls in rec.class_ids:
+    #                 for stu in cls.student_ids:
+    #                     children_vals.append((0, 0, {
+    #                         'student_id': stu.id,
+    #                     }))
+    #                     # student_exams = self.env['school.student.exam'].create({
+    #                     #     'exam_id': rec.id,
                             
                 
-                        # })
-                rec.student_exam_ids = children_vals
+    #                     # })
+    #             rec.student_exam_ids = children_vals
                 
     def action_confirm(self):
         self.ensure_one()
@@ -105,26 +139,6 @@ class SchoolStudentExam(models.Model):
         
         return result
     
-    # grade = fields.Char(string='Grade', compute='_compute_grade', store=True)
-    
-    
-    # @api.depends('total_marks', 'total_marks')
-    # def _compute_grade(self):
-    #     for rec in self:
-    #         if rec.total_marks > 0:
-    #             percentage = (rec.total_marks / rec.total_marks) * 100
-    #             if percentage >= 90:
-    #                 rec.grade = 'A'
-    #             elif percentage >= 80:
-    #                 rec.grade = 'B'
-    #             elif percentage >= 70:
-    #                 rec.grade = 'C'
-    #             elif percentage >= 60:
-    #                 rec.grade = 'D'
-    #             else:
-    #                 rec.grade = 'F'
-    #         else:
-    #             rec.grade = 'N/A'
 
     def view_detail_stu_exam(self):
         self.ensure_one()
@@ -151,6 +165,14 @@ class SchoolExamTimeTable(models.Model):
     start_time = fields.Datetime(string='Start Time', required=True)
     end_time = fields.Datetime(string='End Time', required=True)
     total_marks = fields.Float(string='Total Marks', required=True)
-    class_id = fields.Many2one('school.classes', string='Class', required=True)
+    class_id = fields.Many2one('school.classes', string='Class', required=True,ondelete='cascade')
     class_code = fields.Char(related='class_id.code', string='Class Code', store=True)
     
+    
+    @api.model
+    def create(self, values):
+        result = super(SchoolExamTimeTable,self).create(values)
+        exist_count = self.env['school.exam.timetable'].search_count([('exam_id', '=', result.exam_id.id),('subject_id','=',result.subject_id.id),('id','!=',result.id)])
+        if exist_count > 0:
+            raise UserError(f"The timetable for subject {result.subject_id.name} already exists for this exam.")
+        return result

@@ -13,10 +13,11 @@ class Majors(models.Model):
     currency_id = fields.Many2one('res.currency', string='Currency', required=True, default=lambda self: self.env.company.currency_id)
     description = fields.Text(string='Description')
     product_id = fields.Many2one('product.product', string='Product')
-    state = fields.Selection([('draft', 'Draft'), ('confirm', 'Confirmed')], default='draft', string='Status')
+    state = fields.Selection([('draft', 'Draft'),('edit','Edit'),('confirm', 'Confirmed')], default='draft', string='Status',tracking=True)
     total_years = fields.Integer(string='Total Years', required=True, digits=(2, 0),default=4)
+    curriculum_ids = fields.One2many('school.majors.curriculum', 'major_id', string='Curriculum')
     # subject_ids = fields.Many2many('school.subjects', string='Subjects', domain="[('sub_type', '=', 'major')]")
-    
+
     
     def create_product(self):
         for major in self:
@@ -29,3 +30,25 @@ class Majors(models.Model):
             major.product_id = product.id
             major.state = 'confirm'
             
+            
+    def action_edit(self):
+        self.ensure_one()
+        self.state = 'edit'
+
+    def action_confirm(self):
+        self.ensure_one()
+        self.state = 'confirm'
+
+class MajorsCurriculum(models.Model):
+    _name = 'school.majors.curriculum'
+    _description = 'Majors Curriculum'
+
+    major_id = fields.Many2one('school.majors', string='Major', required=True,ondelete='cascade')
+    subject_ids = fields.Many2many('school.subjects', string='Subject', required=True)
+    years = fields.Selection(
+        [('first', 'First Year'), ('second', 'Second Year'), ('third', 'Third Year'),('fourth', 'Fourth Year')],
+        string='Year',
+        required=True,
+        default='first'
+    )
+    semester = fields.Selection([('1', 'Semester 1'), ('2', 'Semester 2'),('3','Semester 3'),('4','Semester 4')], string='Semester', required=True)

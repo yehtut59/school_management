@@ -14,7 +14,7 @@ class Classes(models.Model):
     # main_subject = fields.Many2one('school.subjects', string='Main Subject', required=True,domain="[('sub_type', '=', 'major')]")
     student_ids = fields.One2many('school.students','class_id',string='Students',domain="[('state', '==', 'done')]")
     teacher_ids = fields.Many2many('school.teachers', string='Teachers')
-    subject_ids = fields.Many2many('school.subjects', string='Subjects')
+    subject_ids = fields.Many2many('school.subjects', string='Subjects',store=True,compute="_compute_subjects")
     years = fields.Selection(
         [('first', 'First Year'), ('second', 'Second Year'), ('third', 'Third Year'),('fourth', 'Fourth Year')],
         string='Year',
@@ -27,6 +27,17 @@ class Classes(models.Model):
     start_date = fields.Date(string='Start Date')
     has_child_class  = fields.Boolean(string='Has Child Class', compute='_compute_has_child_class', store=True)
     
+    @api.depends('major_id','years')
+    def _compute_subjects(self):
+        for rec in self:
+            if rec.major_id:
+                curriculum_records = self.env['school.majors.curriculum'].search([('major_id','=',rec.major_id.id),('years','=',rec.years)])
+                subject_list = []
+                for curriculum in curriculum_records:
+                    subject_list.extend(curriculum.subject_ids.ids)
+                rec.subject_ids = subject_list
+            else:
+                rec.subject_ids = [(5, 0, 0)]
     
     @api.depends('is_parent')
     def _compute_has_child_class(self):

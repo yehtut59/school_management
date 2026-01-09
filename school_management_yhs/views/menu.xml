@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- Academic Menu -->
+    <menuitem
+        id="academic_root_menu"
+        name="Academic"
+        sequence="2"/>
+
+    <menuitem
+        id="school_students_menu"
+        name="Students"
+        parent="academic_root_menu"
+        action="students_action"
+        sequence="1"/>
+
+    <menuitem
+        id="school_teachers_menu"
+        name="Teachers"
+        parent="academic_root_menu"
+        action="teachers_action"
+        sequence="2"/>
+
+    <!-- ///////////////////////////////////////// -->
+
+    <!-- Academic Setup Menu -->
+    <menuitem
+        id="academic_setup_root_menu"
+        name="Academic Setup"
+        sequence="1"/>
+
+    <!-- Classes Menu -->
+    <menuitem id="classes_ment" name="Class" action="classes_view_action"
+    parent="academic_setup_root_menu" sequence="1"/>
+
+    <!-- Exam Management Menu -->
+    <menuitem
+            id="exam_main_menu"
+            name="Exam Management"
+            parent="academic_setup_root_menu"
+            sequence="2"/>
+    <menuitem id="exam_menu" name="Exam" action="school_exam_action" parent="exam_main_menu" sequence="1"/>
+
+    <!-- Majors Menu -->
+    <menuitem
+        id="school_majors_menu"
+        name="Majors"
+        parent="academic_setup_root_menu"
+        action="majors_action"
+        sequence="4"/>
+    <!-- Subjects Menu -->
+    <menuitem
+        id="school_subjects_menu"
+        name="Subjects"
+        parent="academic_setup_root_menu"
+        action="subjects_view_action"
+        sequence="3"/>
+</odoo>

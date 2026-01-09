@@ -9,14 +9,14 @@
             <list editable="top">
                 <field name="status" column_invisible="1"/>
                 <field name="student_exam_id" domain="[('status','=','done')]" readonly="status != 'done'"/>
-                <field name="student_id" readonly="status != 'done'"/>
-                <field name="exam_id" readonly="status != 'done'"/>
+                <field name="student_id"/>
+                <field name="exam_id"/>
                 <field name="domain_subject_ids" column_invisible="1"/>
                 <field name="subject_id" domain="[('id','in',domain_subject_ids)]" readonly="status != 'done'"/>
                 <field name="marks_obtained" readonly="status != 'done'"/>
-                <field name="grade" readonly="status != 'done'"/>
-                <field name="is_passed" readonly="status != 'done'"/>
-                <field name="status" string="Exam Status" optional="show" readonly="status != 'done'"/>
+                <field name="grade" />
+                <field name="is_passed"/>
+                <field name="status" string="Exam Status" optional="show" />
             </list>
         </field>
     </record>

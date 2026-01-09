@@ -7,12 +7,13 @@
         <field name="arch" type="xml">
             <form class="modal-xl">
                 <div string="Student Exam Details">
-                    
-                    <field name="stu_exam_detail_ids" mode="list" readonly="parent.state!='done'">
+                    <field name="status" invisible="1"/>
+                    <field name="stu_exam_detail_ids" mode="list" readonly="status!='done'">
                         <list editable="bottom">
                             <field name="student_id"/>
                             <field name="exam_id"/>
-                            <field name="subject_id" domain="[('id','in',exam_id.subject_ids)]"/>
+                            <field name="domain_subject_ids" column_invisible="1"/>
+                            <field name="subject_id" domain="[('id','in',domain_subject_ids)]"/>
                             <field name="marks_obtained"/>
                             <field name="grade"/>
                             <field name="is_passed"/>

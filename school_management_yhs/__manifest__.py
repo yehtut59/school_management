@@ -34,6 +34,7 @@ Long description of module's purpose
         'views/stu_exam_detail.xml',
         'wizard/stu_exam_detail_wizard.xml',
         'reports/class_report.xml',
+        'views/menu.xml'
     ],
     # only loaded in demonstration mode
     'demo': [

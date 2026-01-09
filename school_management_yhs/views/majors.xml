@@ -10,7 +10,9 @@
                 <header>
                     <field name="product_id" invisible="1"/>
                     <button name="create_product" type="object" class="oe_highlight" string="Confirm" invisible="product_id != False"/>
-                    <field name="state" widget="statusbar" statusbar_visible="draft,confirm"/>
+                    <button name="action_edit" string="Edit" type="object" class="oe_highlight" invisible="state!='confirm'"/>
+                    <button name="action_confirm" string="Confirm" type="object" class="oe_highlight" invisible="state!='edit'"/>
+                    <field name="state" widget="statusbar" statusbar_visible="draft,edit,confirm"/>
                 </header>
                 <sheet>
                     <group>
@@ -25,6 +27,18 @@
                         </group>
                         
                     </group>
+                    <notebook>
+                        <page name="major_curriculum" string="Major Curriculum">
+                            <field name="curriculum_ids" mode="list" readonly="state=='confirm'">
+                                <list editable="bottom">
+                                    <field name="subject_ids" widget="many2many_tags"/>
+                                    <field name="years"/>
+                                    <field name="semester"/>
+                                </list>
+
+                            </field>
+                        </page>
+                    </notebook>
                     <group>
                         <field name="description" placeholder="Description about Major"/>
                     </group>
@@ -51,11 +65,6 @@
         <field name="view_mode">list,form</field>
     </record>   
 
-    <menuitem
-        id="school_majors_menu"
-        name="Majors"
-        parent="classes_root_menu"
-        action="majors_action"
-        sequence="4"/>
+    
 
 </odoo>
