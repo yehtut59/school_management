@@ -10,3 +10,4 @@ access_school_exam_timetable,school_exam_timetable,model_school_exam_timetable,b
 access_student_exam_detail,school_exam_detail,model_student_exam_detail,base.group_user,1,1,1,1
 access_school_majors_curriculum,school_majors_curriculum,model_school_majors_curriculum,base.group_user,1,1,1,1
 access_school_student_attendance,school_student_attendance,model_school_student_attendance,base.group_user,1,1,1,1
+access_school_class_schedule,school_class_schedule,model_school_class_schedule,base.group_user,1,1,1,1

@@ -25,6 +25,8 @@ class Students(models.Model):
     is_paid = fields.Boolean(string='Is Paid', default=False)
     company_id = fields.Many2one('res.company', string='Company', required=True, default=lambda self: self.env.company)
     student_exam_ids = fields.One2many('school.student.exam', 'student_id', string='Student Exams',ondelete='cascade')
+    edu_level = fields.Selection(related='major_id.edu_level', string='Education Level', store=True)
+    years = fields.Selection(related='class_id.years', string='Year', store=True)
     
     @api.onchange('major_id')
     def _onchange_major_id(self):

@@ -28,7 +28,9 @@
                             </group>
                             <group>
                                 <field name="major_id" readonly="state!='draft'"/>
-                                <field name="years" readonly="state!='draft'"/>
+                                <field name="edu_level" readonly="1"/>
+                                <field name="years" readonly="state!='draft'" invisible="edu_level == 'high_school'" required="edu_level != 'high_school'"/>
+                                <field name="grades" readonly="state!='draft'" invisible="edu_level != 'high_school'" required="edu_level == 'high_school'"/>
                                 <!-- <field name="domain_subject_ids" invisible="1"/> -->
                                 <field name="subject_ids" widget="many2many_tags"/>
                                 <field name="class_ids" domain="[('major_id','=',major_id),('years','=',years)]" widget="many2many_tags" readonly="state!='draft'"/>

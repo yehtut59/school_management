@@ -16,6 +16,8 @@ class Majors(models.Model):
     state = fields.Selection([('draft', 'Draft'),('edit','Edit'),('confirm', 'Confirmed')], default='draft', string='Status',tracking=True)
     total_years = fields.Integer(string='Total Years', required=True, digits=(2, 0),default=4)
     curriculum_ids = fields.One2many('school.majors.curriculum', 'major_id', string='Curriculum')
+    edu_level = fields.Selection([('high_school', 'High School'),('bachelor', 'Bachelor'), ('master', 'Master'), ('doctorate', 'Doctorate')], string='Education Level', required=True,default='bachelor')
+    
     # subject_ids = fields.Many2many('school.subjects', string='Subjects', domain="[('sub_type', '=', 'major')]")
 
     
