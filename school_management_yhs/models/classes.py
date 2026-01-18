@@ -17,9 +17,8 @@ class Classes(models.Model):
     subject_ids = fields.Many2many('school.subjects', string='Subjects',store=True,compute="_compute_subjects")
     class_schedule_ids = fields.One2many('school.class.schedule', 'class_id', string='Class Schedule',ondelete='cascade')
     years = fields.Selection(
-        [('first', 'First Year'), ('second', 'Second Year'), ('third', 'Third Year'),('fourth', 'Fourth Year')],
+        [('first', 'First Year'), ('second', 'Second Year'), ('third', 'Third Year'),('fourth', 'Fourth Year'),('fifth', 'Fifth Year'),('sixth', 'Sixth Year')],
         string='Year',
-        default='first'
     )
     edu_level = fields.Selection(related='major_id.edu_level', string='Education Level', store=True)
     grades = fields.Selection(
@@ -28,11 +27,20 @@ class Classes(models.Model):
          ('11', 'Grade 11'), ('12', 'Grade 12')],
         string='Grades',default='1'
     )
+    schedule_mode = fields.Selection([('custom','Custom Schedule'),('fixed','Fixed Schedule')],string="Schedule Mode",default='fixed',required=True)
+    schedule_type_id = fields.Many2one('class.schedule.type',string="Schedule Type")
     parent_id = fields.Many2one('school.classes', string='Parent Class')
     is_parent = fields.Boolean(string='Is Parent Class', compute='_compute_is_parent', store=True)
     is_active = fields.Boolean(string='Is Active', default=False)
     start_date = fields.Date(string='Start Date')
     has_child_class  = fields.Boolean(string='Has Child Class', compute='_compute_has_child_class', store=True)
+    
+    
+    def generate_timetable(self):
+        self.ensure_one()
+        if self.schedule_type_id:
+            self.schedule_type_id.generate_timetable(self)
+            
     
     @api.depends('major_id','years')
     def _compute_subjects(self):
@@ -89,6 +97,9 @@ class Classes(models.Model):
             if not rec.code:
                 rec.generate_class_code()
             
+            rec.class_schedule_ids.unlink()
+            rec.generate_class_schedule()
+            
     def deactivate_class(self):
         for rec in self:
             rec.is_active = False
@@ -105,16 +116,56 @@ class Classes(models.Model):
         for record in self:
             record.is_parent = bool(not record.parent_id)
             
+    def generate_class_schedule(self):
+        self.ensure_one()
+        if self.schedule_type_id and not self.class_schedule_ids:
+            dow_mapping = {
+                1: 'monday',
+                2: 'tuesday',
+                3: 'wednesday',
+                4: 'thursday',
+                5: 'friday',
+            }
+            for i in range(1,6):
+                schedule = self.env['school.class.schedule'].create({
+                    'class_id': self.id,
+                    'day_of_week': dow_mapping[i],
+                })
+                schedule_type = self.schedule_type_id
+                sub_per_day = self.schedule_type_id.subject_per_day
+                start_time = schedule_type.check_in_time
+                for y in range(0, sub_per_day):
+                    
+                    if start_time >= schedule_type.lunch_start_time and start_time < schedule_type.lunch_end_time:
+                        start_time = schedule_type.lunch_end_time    
+                        
+                    self.env['class.schedule.detail'].create({ 
+                        'class_schedule_id': schedule.id, 
+                        'start_time': start_time,
+                        'end_time' : start_time + schedule_type.subject_hours,
+                    })
+                    start_time += schedule_type.subject_hours
+                # for 
+                #     self.env['class.schedule.detail'].create({
+                #         'class_schedule_id': schedule.id,
+                #         'subject_id': subject.id,
+                #         'start_time': ,
+                #         'end_time': ,
+                #     })  
+                
+        return True
             
     def generate_child_classes(self):
         for res in self:
-            if (not res.is_parent) and res.years == 'first':
+            if res.is_parent and res.years == 'first' and res.edu_level != 'high_school':
                 res.start_date = fields.Date.today()
                 total_year = res.major_id.total_years
                 years_mapping = {
                     1: 'second',
                     2: 'third',
-                    3: 'fourth'
+                    3: 'fourth',
+                    4: 'fifth',
+                    5: 'sixth',
                 }
                 res.generate_class_code()
                 for year in range(1, total_year):
@@ -129,34 +180,24 @@ class Classes(models.Model):
                     child_class.generate_class_code()
                     
                 res.is_active = True
+            elif res.is_parent and res.edu_level == 'high_school' and res.grades == '1':
+                res.start_date = fields.Date.today()
+                total_year = res.major_id.total_years-1
+                res.generate_class_code()
+                for year in range(1, total_year):
+                    child_class = self.env['school.classes'].create({
+                        'name': f"{res.name} - Grade {year + 1}",
+                        # 'code': f"{res.major_id.code}-{year+1}",
+                        'company_id': res.company_id.id,
+                        'major_id': res.major_id.id,
+                        'grades': str(year + 1),
+                        'parent_id': res.id
+                    })
+                    child_class.generate_class_code()
+                res.is_active = True
                 
 
-class ClassSchedule(models.Model):
-    _name = 'school.class.schedule'
-    _description = 'Class Schedule'
 
-    class_id = fields.Many2one('school.classes', string='Class', required=True, ondelete='cascade')
-    domain_subject_ids = fields.Many2many(related='class_id.subject_ids', string='Subjects')
-    subject_id = fields.Many2one('school.subjects', string='Subject', required=True)
-    domain_teacher_ids = fields.Many2many('school.teachers', string='Teachers', compute='_compute_domain_teacher_ids', store=True)
-    teacher_id = fields.Many2one('school.teachers', string='Teacher', required=True)
-    day_of_week = fields.Selection(
-        [('monday', 'Monday'), ('tuesday', 'Tuesday'), ('wednesday', 'Wednesday'),
-         ('thursday', 'Thursday'), ('friday', 'Friday'), ('saturday', 'Saturday'), ('sunday', 'Sunday')],
-        string='Day of the Week',
-        required=True
-    )
-    start_time = fields.Float(string='Start Time', required=True)
-    end_time = fields.Float(string='End Time', required=True)
-    
-    
-    @api.depends('class_id')
-    def _compute_domain_teacher_ids(self):
-        for rec in self:
-            if rec.class_id:
-                rec.domain_teacher_ids = self.env['school.teachers'].search([('class_ids','=',rec.class_id.id)]).ids
-            else:
-                rec.domain_teacher_ids = [(5, 0, 0)]
                 
                     
                 

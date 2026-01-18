@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="class_schedule_list" model="ir.ui.view">
+        <field name="name">class.schedule.list</field>
+        <field name="model">class.schedule.detail</field>
+        <field name="arch" type="xml">
+            <list editable="bottom">
+                <field name="class_schedule_id" domain="[('schedule_mode','=','custom')]"/>
+                <field name="class_id" />
+                <field name="day_of_week"/>
+                <field name="domain_subject_ids" column_invisible="1"/>
+                <field name="domain_teacher_ids" column_invisible="1"/>
+                <field name="subject_id" domain="[('id', 'in', domain_subject_ids)]" readonly="schedule_mode == 'fixed'"/>
+                <field name="teacher_id" domain="[('id', 'in', domain_teacher_ids)]" readonly="schedule_mode == 'fixed'"/>
+                <field name="start_time" widget="float_time" readonly="schedule_mode == 'fixed'"/>
+                <field name="end_time" widget="float_time" readonly="schedule_mode == 'fixed'"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="class_schedule_action" model="ir.actions.act_window">
+        <field name="name">Class Schedules</field>
+        <field name="res_model">class.schedule.detail</field>
+        <field name="view_mode">list</field>
+    </record>
+
+</odoo>

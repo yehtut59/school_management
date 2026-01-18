@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <data>
+    
+        <template id="class_schedule_report">
+            <t t-name="class_schedule_report">
+                <t t-call="web.basic_layout">
+                    <div>
+                        <div class="row">
+                            <div class="col-4">
+                                <img t-att-src="image_data_uri(docs.company_id.logo)" style="max-height: 120px; max-width: 300px;"/>
+                            </div>
+                            <div class="col-8 text-end">
+                                <t t-set="current_date" t-value="datetime.datetime.today()"/>
+                                <h2><span t-esc="current_date.strftime('%d-%m-%Y')"/></h2>
+                            </div>
+                        </div>
+                        
+                    </div>
+                    <t t-foreach="docs" t-as="o">
+                        <div class="p-3 row border-bottom">
+                            <div class="col-6">
+                                <h4><b>Class Name: </b> <span t-field="o.name"/></h4>
+                            </div>
+                            <div class="col-6 text-center">
+                                <h4><b>Class Code: </b> <span t-field="o.code"/></h4>
+                            </div>
+                        </div>
+                        <div class="p-3 row border-bottom">
+                            <div class="col-6">
+                                <h4><b>Year: </b> <span t-field="o.years"/></h4>
+                            </div>
+                            <div class="col-6 text-end">
+                                
+                            </div>
+                        </div>
+
+                        <h3 class="border-bottom mt-3">Timetable</h3>
+                        <!-- <table class="table table-bordered">
+                            <thead>
+                                <tr>
+                                    <th></th>
+                                    <t t-foreach="o.mapped_days()" t-as="day">
+                                        <th><span t-esc="day"/></th>
+                                    </t>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <t t-foreach="o.subject_ids" t-as="sub">
+                                    <tr>
+                                        <t t-foreach="o.mapped_days()" t-as="day_h">
+                                            <td><span t-esc="o.search_days_hours(day_h,sub)"/></td>
+                                        </t>
+                                        
+                                    </tr>
+                                </t>
+                            </tbody>
+                        
+                        </table> -->
+                    </t>
+                </t>
+            </t>
+        </template>
+    
+    </data>
+
+    <record id="class_schedule_report_action" model="ir.actions.report">
+        <field name="name">Class Schedule</field>
+        <field name="model">school.classes</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">school_management_yhs.class_schedule_report</field>
+        <field name="report_file">school_management_yhs.class_schedule_report</field>
+        <field name="print_report_name">'Class Schedule - %s' % (object.name)</field>
+        <field name="binding_model_id" ref="model_school_classes"/>
+        <field name="binding_type">report</field>
+    </record>
+    
+
+</odoo>

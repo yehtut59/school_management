@@ -12,16 +12,16 @@ class SchoolExam(models.Model):
     end_date = fields.Date(name="End Date", required=True)
     major_id = fields.Many2one('school.majors', string='Major', required=True)
     years = fields.Selection(
-        [('first', 'First Year'), ('second', 'Second Year'), ('third', 'Third Year'),('fourth', 'Fourth Year')],
+        [('first', 'First Year'), ('second', 'Second Year'), ('third', 'Third Year'),('fourth', 'Fourth Year'),('fifth', 'Fifth Year'),('sixth', 'Sixth Year')],
         string='Year',
-        default='first'
+       
     )
     edu_level = fields.Selection(related='major_id.edu_level', string='Education Level', store=True)
     grades = fields.Selection(
         [('1', 'Grade 1'), ('2', 'Grade 2'), ('3', 'Grade 3'), ('4', 'Grade 4'), ('5', 'Grade 5'),
          ('6', 'Grade 6'), ('7', 'Grade 7'), ('8', 'Grade 8'), ('9', 'Grade 9'), ('10', 'Grade 10'),
          ('11', 'Grade 11'), ('12', 'Grade 12')],
-        string='Grades',default='1'
+        string='Grades',
     )
     # domain_subject_ids = fields.Many2many('school.subjects', string='Subjects',compute='_compute_domain_subjects',store=True)
     subject_ids = fields.Many2many('school.subjects', string='Subjects', required=True,store=True,compute="_compute_subjects")

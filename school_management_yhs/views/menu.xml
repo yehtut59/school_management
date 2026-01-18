@@ -37,9 +37,13 @@
     <menuitem id="classes_menu" name="Class"
     parent="academic_setup_root_menu" sequence="1"/>
 
-    <menuitem id="sub_classes_menu" name="Classes" action="classes_view_action" parent="classes_menu" sequence="1"/>
+    <menuitem id="schedule_type_menu" name="Schedule Type" action="class_schedule_type_action" parent="classes_menu" sequence="1"/>
 
-    <menuitem id="class_schedule_menu" name="Class Schedule" action="class_schedule_action" parent="classes_menu" sequence="2"/>
+    <menuitem id="sub_classes_menu" name="Classes" action="classes_view_action" parent="classes_menu" sequence="2"/>
+
+    
+
+    <menuitem id="class_schedule_menu" name="Class Schedule" action="class_schedule_action" parent="classes_menu" sequence="3"/>
 
     <!-- Exam Management Menu -->
     <menuitem

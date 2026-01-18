@@ -33,9 +33,12 @@ Long description of module's purpose
         'views/exam.xml',
         'views/stu_exam_detail.xml',
         'views/stu_attendance.xml',
-        'views/class_schedule.xml',
+        'views/class_schedule_detail.xml',
+        'views/class_schedule_type.xml',
         'wizard/stu_exam_detail_wizard.xml',
+        'wizard/class_schedule_detail_wizard.xml',
         'reports/class_report.xml',
+        'reports/class_schedule_report.xml',
         'views/menu.xml'
     ],
     # only loaded in demonstration mode

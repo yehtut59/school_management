@@ -48,9 +48,14 @@ class MajorsCurriculum(models.Model):
     major_id = fields.Many2one('school.majors', string='Major', required=True,ondelete='cascade')
     subject_ids = fields.Many2many('school.subjects', string='Subject', required=True)
     years = fields.Selection(
-        [('first', 'First Year'), ('second', 'Second Year'), ('third', 'Third Year'),('fourth', 'Fourth Year')],
+        [('first', 'First Year'), ('second', 'Second Year'), ('third', 'Third Year'),('fourth', 'Fourth Year'),('fifth', 'Fifth Year'),('sixth', 'Sixth Year')],
         string='Year',
         required=True,
-        default='first'
+    )
+    grades = fields.Selection(
+        [('1', 'Grade 1'), ('2', 'Grade 2'), ('3', 'Grade 3'), ('4', 'Grade 4'), ('5', 'Grade 5'),
+         ('6', 'Grade 6'), ('7', 'Grade 7'), ('8', 'Grade 8'), ('9', 'Grade 9'), ('10', 'Grade 10'),
+         ('11', 'Grade 11'), ('12', 'Grade 12')],
+        string='Grades',
     )
     semester = fields.Selection([('1', 'Semester 1'), ('2', 'Semester 2'),('3','Semester 3'),('4','Semester 4')], string='Semester', required=True)
